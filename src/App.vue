@@ -3,7 +3,7 @@
     <header>
       <nav>
         <ul>
-          <li class="nav-item-class">
+          <li class="nav-item">
             <img src="./assets/build-a-bot-logo.png" alt="Bot Logo" class="logo">
             Build a Bot
           </li>
