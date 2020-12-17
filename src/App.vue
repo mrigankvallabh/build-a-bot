@@ -4,28 +4,33 @@
       <nav>
         <ul>
           <li class="nav-item">
-            <img src="./assets/build-a-bot-logo.png" alt="Bot Logo" class="logo">
-            Build a Bot
+            <router-link class="nav-link" :to="{name: 'Home'}" exact>
+              <img src="./assets/build-a-bot-logo.png" alt="Bot Logo" class="logo">
+              Build-a-Bot
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" :to="{name: 'Build'}" exact>
+              Customize
+            </router-link>
           </li>
         </ul>
       </nav>
     </header>
-    <main>
-      <RobotBuilder />
-    </main>
+    <div class="container">
+      <aside class="aside">
+        <router-view name="sidebar"/>
+      </aside>
+      <main>
+        <router-view />
+      </main>
+    </div>
   </div>
 </template>
 
 <script>
-// import HomePage from './home/HomePage.vue';
-import RobotBuilder from './build/RobotBuilder.vue';
-
 export default {
   name: 'App',
-  components: {
-    // HomePage,
-    RobotBuilder,
-  },
 };
 </script>
 
@@ -42,7 +47,7 @@ export default {
 }
 header {
   background-color: #999;
-  width: 1084px;
+  width: 1184px;
   margin: 0 auto;
 }
 ul {
@@ -60,10 +65,27 @@ ul {
   height: 30px;
 }
 main {
-  margin: 0 auto;
-  padding: 2rem;
+  padding: 30px;
   background-color: #fff;
-  width: 64rem;
-  min-height: 20rem;
+  width: 964px;
+  min-height: 300px;
+}
+.nav-link {
+  text-decoration: none;
+  color: inherit;
+}
+.router-link-active {
+  color: #fff;
+}
+.container {
+  display: flex;
+  margin: 10px auto 0 auto;
+  justify-content: center;
+}
+.aside {
+  padding: 30px;
+  background-color: #aaa;
+  width: 100px;
+  min-height: 300px;
 }
 </style>

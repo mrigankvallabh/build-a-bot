@@ -81,10 +81,21 @@ import PartSelector from './PartSelector.vue';
 
 export default {
   name: 'RobotBuilder',
+  beforeRouteLeave(to, from, next) {
+    if (this.addedToCart) {
+      next(true);
+    } else {
+      /* eslint no-alert: 0 */
+      /* eslint no-restricted-globals: 0 */
+      const response = confirm('This robot is not added to Cart! Navigating away will lose all the changes. Do you want to leave?');
+      next(response);
+    }
+  },
   components: { PartSelector, CollapsibleSection },
   data() {
     return {
       availableParts,
+      addedToCart: false,
       selectedRobot: {
         head: {},
         leftArm: {},
@@ -118,7 +129,7 @@ export default {
         + robot.base.cost;
 
       this.cart.push({ ...robot, cost });
-      console.log('Added to cart');
+      this.addedToCart = true;
     },
   },
 };
