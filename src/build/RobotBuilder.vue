@@ -1,6 +1,6 @@
 <template>
-  <div class="content">
-      <div class="preview">
+  <div class="content" v-if="availableParts">
+    <div class="preview">
         <CollapsibleSection>
           <div class="preview-content">
             <div class="top-row">
@@ -17,7 +17,7 @@
           </div>
         </CollapsibleSection>
         <button class="add-to-cart" @click="addToCart()">Add To Cart</button>
-      </div>
+    </div>
     <div class="top-row">
       <!-- <div class="robot-name">
         {{ selectedRobot.head.title }}
@@ -53,34 +53,20 @@
         @partSelected="(part) => (selectedRobot.base = part)"
       />
     </div>
-    <div>
-      <h1>Cart</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Robot</th>
-            <th class="cost">Cost</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(robot, index) in cart" :key="index">
-            <td>{{ robot.head.title }}</td>
-            <td class="cost">{{ robot.cost }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
   </div>
 </template>
 
 <script>
-import availableParts from '../data/parts';
+import { mapActions /* , mapMutations */ } from 'vuex';
 import CollapsibleSection from '../shared/CollapsibleSection.vue';
 import createdHookMixin from './created-hook.mixin';
 import PartSelector from './PartSelector.vue';
 
 export default {
   name: 'RobotBuilder',
+  created() {
+    this.getParts();
+  },
   beforeRouteLeave(to, from, next) {
     if (this.addedToCart) {
       next(true);
@@ -94,7 +80,6 @@ export default {
   components: { PartSelector, CollapsibleSection },
   data() {
     return {
-      availableParts,
       addedToCart: false,
       selectedRobot: {
         head: {},
@@ -108,6 +93,9 @@ export default {
   },
   mixins: [createdHookMixin],
   computed: {
+    availableParts() {
+      return this.$store.state.robots.parts;
+    },
     headBorderStyle() {
       return {
         border: this.selectedRobot.head.onSale
@@ -120,6 +108,8 @@ export default {
     },
   },
   methods: {
+    ...mapActions('robots', ['getParts', 'addRobotToCart']),
+    // ...mapMutations('robots', ['someMutation1', 'someMutation2' ...]),
     addToCart() {
       const robot = this.selectedRobot;
       const cost = robot.head.cost
@@ -128,7 +118,9 @@ export default {
         + robot.torso.cost
         + robot.base.cost;
 
-      this.cart.push({ ...robot, cost });
+      this.addRobotToCart({ ...robot, cost })
+        .then(() => this.$router.push('/cart'))
+        .catch(console.error);
       this.addedToCart = true;
     },
   },
@@ -242,15 +234,6 @@ export default {
   width: 210px;
   padding: 3px;
   font-size: 16px;
-}
-th,
-td {
-  text-align: left;
-  padding: 5px;
-  padding-right: 20px;
-}
-.cost {
-  text-align: right;
 }
 .sale-border {
   border: 3px solid red;

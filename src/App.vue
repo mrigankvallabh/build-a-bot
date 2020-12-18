@@ -1,5 +1,10 @@
 <template>
   <div id="app">
+    <!-- Root Foo: {{ rootFoo }} <br>
+    Robots Foo: {{ robotsFoo }} <br>
+    Users Foo: {{ usersFoo }} <br><br>
+    Root Foo: {{ rootFoo }} <br>
+    Robots Foo: {{ robotsFoo }} <br> -->
     <header>
       <nav>
         <ul>
@@ -13,6 +18,14 @@
             <router-link class="nav-link" :to="{name: 'Build'}" exact>
               Customize
             </router-link>
+          </li>
+          <li class="nav-item cart">
+            <router-link class="nav-link" :to="{name: 'Cart'}" exact>
+              Cart
+            </router-link>
+            <div class="cart-items">
+              {{ cart.length }}
+            </div>
           </li>
         </ul>
       </nav>
@@ -29,8 +42,22 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex';
+
 export default {
   name: 'App',
+  computed: {
+    cart() {
+      return this.$store.state.robots.cart;
+    },
+    ...mapState({
+      rootFoo: 'foo',
+      usersFoo: (state) => state.users.foo,
+    }),
+    ...mapState('robots', { robotsFoo: 'foo' }),
+    ...mapGetters({ rootGetterFoo: 'foo' }),
+    ...mapGetters('robots', { robotsGetterFoo: 'foo' }),
+  },
 };
 </script>
 
@@ -60,6 +87,11 @@ ul {
   font-size: 22px;
   border-right: 1px solid #bbb;
 }
+.nav-item.cart {
+  position: relative;
+  margin-left: auto;
+  border-right: none;
+}
 .logo {
   vertical-align: middle;
   height: 30px;
@@ -87,5 +119,16 @@ main {
   background-color: #aaa;
   width: 100px;
   min-height: 300px;
+}
+.cart-items {
+  position: absolute;
+  top: -5px;
+  right: -9px;
+  font-size: 18px;
+  width: 20px;
+  text-align: center;
+  display: inline-block;
+  border-radius: 100px;
+  background-color: mediumseagreen;
 }
 </style>
